@@ -160,8 +160,13 @@
    }
 
    $("#container").on('click', '#hapusTakeb', function () {
-      $(this).parents("tr").remove()
-      console.log($('table tr').length)
+      var r = confirm("Hapus Tata Kebaktian : " + $(this).parents("tr")[0].children[2].children[0].value);
+      if (r == true) {
+         $(this).parents("tr").remove()
+         $('.check_all').prop("checked", false);
+         check();
+      }
+
       if ($('table tr').length == 1) {
          var data = '<tr id="template">'
          data += '<td colspan="6">'
