@@ -54,7 +54,7 @@
 <script>
    $(document).ready(function () {
       flagCount = false
-      objectTemplate = document.getElementById("template")
+
       $('tbody').sortable({
          placeholder: "backgroundPlace",
          forcePlaceholderSize: true,
@@ -159,14 +159,30 @@
       saveAs(blob, "static.txt");
    }
 
+   $("#container").on('click', '#hapusTakeb', function () {
+      $(this).parents("tr").remove()
+      console.log($('table tr').length)
+      if ($('table tr').length == 1) {
+         var data = '<tr id="template">'
+         data += '<td colspan="6">'
+         data += '<div style="text-align: center;">'
+         data += '<img src="add.png" width="25" class=\'addmore\'>'
+         data += '</div>'
+         data += '</td>'
+         data += '</tr>'
+         $('table').append(data)
+      }
+   })
+
    var i = 2;
    $("#container").on('click', '.addmore', function () {
       count = (flagCount) ? $('table tr').length : 1;
       var data = "<tr><td><input type='checkbox' class='case'/></td><td hidden><span id='snum" + i + "'>" + count + ".</span></td>";
       data += "<td><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]'/></td> <td><input type='text' id='lineb" + i + "' name='lineb[]'/></td><td><select id='animasi' name='animasi'><option value='2'>Lagu</option><option value='3'>Bacaan</option><option value='4'>Acara</option><option value='5'>Full</option><option value='6'>Lirik</option><option value='7'>Text</option></select></td>";
       data += "<td><div class=\"up\"><img src=\"up.png\" width=\"20\"></div> <div class=\"down\"><img src=\"down.png\" width=\"20\"></a></td>"
-      data += "<td class=\"enable-drag\"><img src=\"add.png\" class=\"addmore\" width=\"24\" style=\"margin-right: 5px\"><img src=\"drag.png\" width=\"24\"/></td>"
+      data += "<td class=\"enable-drag\"><img src=\"add.png\" class=\"addmore\" width=\"24\" style=\"margin-right: 5px\"><img src=\"delete.png\" id=\"hapusTakeb\" width=\"24\" style=\"margin-right: 5px\"><img src=\"drag.png\" width=\"24\"/></td>"
       data += "</tr>"
+      objectTemplate = document.getElementById("template")
 
       if ($(this).parent()[0].className == "enable-drag") {
          $(this).parents("tr").after(data)
@@ -208,7 +224,6 @@
    });
 
    function readerFile(file) {
-      (objectTemplate) ? objectTemplate.remove() : "";
 
       var reader = new FileReader();
 
@@ -230,6 +245,8 @@
       reader.readAsText(file);
 
       reader.addEventListener('load', function (e) {
+         var objectTemplate = document.getElementById("template");
+         (objectTemplate) ? objectTemplate.remove() : "";
 
          var text = e.target.result;
          var textBaru = text.split("\n");
@@ -290,7 +307,7 @@
             saveAnimasi = ""
             // }
 
-      
+
             data += "<td><div class=\"up\"><img src=\"up.png\" width=\"20\"></div> <div class=\"down\"><img src=\"down.png\" width=\"20\"></a></td>"
             data += "<td class=\"enable-drag\"><img src=\"add.png\" class=\"addmore\" width=\"24\" style=\"margin-right: 5px\"><img src=\"drag.png\" width=\"24\"/></td>"
             data += "</tr>"
