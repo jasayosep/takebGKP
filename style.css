@@ -1,0 +1,66 @@
+.backgroundPlace {
+    background-color: rgb(0, 255, 0);
+    border: 2px solid rgb(0, 255, 0);
+    width: inherited;
+}
+
+input[type=text] {
+    width: 100%;
+}
+
+table {
+    table-layout: auto;
+    width: 100%;
+}
+
+.kontenSpan {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    background: url(urutan.png);
+    background-attachment: local;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    padding-top: 10px;
+    border-color: #ccc;
+    line-height: 16px;
+    resize: none;
+}
+
+.textArea {
+    width: 438px;
+    height: 188px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background: url(urutan.png);
+    background-attachment: local;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    padding-top: 10px;
+    border-color: #ccc;
+    line-height: 16px;
+    resize: none;
+    overflow-y: scroll;
+}
+
+.wordwrap {
+    word-wrap: break-word;
+    /* IE */
+}
+
+#container {
+    margin: auto;
+    width: 50%;
+}
+
+.up {
+    margin: auto;
+    width: 50%;
+}
+
+.down {
+    margin: auto;
+    width: 50%;
+}

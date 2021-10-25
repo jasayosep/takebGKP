@@ -1,0 +1,325 @@
+<head>
+   <script src="custom.js"></script>
+   <script src="jquery.js"></script>
+   <script src="jquery-ui.js"></script>
+   <script src="file.js"></script>
+   <link rel="stylesheet" href="style.css">
+
+</head>
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
+
+
+<div id='container'>
+   <h1>Aplikasi Tata Kebaktian</h1>
+   <div style="display: inline;">
+      <input style="font-size: 1em;width: 30%;" type="file" id="file-input">
+      <button style="font-size: 1em" id="read-button">Baca Data</button>
+   </div>
+
+   <div style="display: inline;float: right;align-content: center;">
+      <div style="display: inline-block;">
+         <img src="save.png" width="30" id="simpanTakeb">
+      </div>
+      <div style="display: inline-block;">
+         <p style="height: 30px;display: table-cell;vertical-align: middle;">Simpan Takeb</p>
+      </div>
+   </div>
+
+   <table border="1" cellspacing="0">
+      <thead>
+         <tr>
+            <th style="width: 0%;"><input class='check_all' type='checkbox' onclick="select_all()" /></th>
+            <!-- <th style="width: 0%;">Urutan</th> -->
+            <th style="width: 50%;">Line 1</th>
+            <th style="width: 50%;">Line 2</th>
+            <th style="width: 0%;">Animasi</th>
+            <th style="width: 0%;">Posisi</th>
+            <th style="width: 0%;"></th>
+         </tr>
+      </thead>
+      <tr id="template">
+         <td colspan="6">
+            <div style="text-align: center;">
+               <img src="add.png" width="25" class='addmore'>
+            </div>
+         </td>
+      </tr>
+      <tbody>
+      </tbody>
+   </table>
+   </form>
+</div>
+<script>
+   $(document).ready(function () {
+      flagCount = false
+      objectTemplate = document.getElementById("template")
+      $('tbody').sortable({
+         placeholder: "backgroundPlace",
+         forcePlaceholderSize: true,
+         "handle": ".enable-drag",
+      });
+      $('.check_all').disableSelection();
+
+      $('table').on('click', '.up,.down', function () {
+         var row = $(this).parents("tr:first");
+         if ($(this).is(".up")) {
+            row.insertBefore(row.prev());
+         } else {
+            row.insertAfter(row.next());
+         }
+      });
+   });
+
+   $(".delete").on('click', function () {
+      hapusTataKebaktian()
+   });
+
+   $(".uploadFile").on('click', function () {
+
+   });
+
+   document.addEventListener('keydown', function (event) {
+      if (event.keyCode == 46) {
+         hapusTataKebaktian()
+      }
+   });
+
+   function hapusTataKebaktian() {
+      listDelete = $('.case:checkbox:checked').parents("tr")
+      if (listDelete.length > 0) {
+         var displayDelete = ""
+         for (let index = listDelete.length - 1; index >= 0; index--) {
+            displayDelete += "\n" + listDelete[index].children[2].children[0].value
+         }
+         displayDelete = displayDelete.replace(/\n*$/, "")
+         var r = confirm("Hapus Tata Kebaktian :" + displayDelete);
+         if (r == true) {
+            $('.case:checkbox:checked').parents("tr").remove();
+            $('.check_all').prop("checked", false);
+            check();
+         }
+      }
+   }
+
+   var asdasd = ""
+   var textLinea = ""
+   var textLaguText = ""
+   $('table').on('change', '#animasi', function () {
+      var animasi = $(this).parents("tr:first")
+      nomorUrutan = animasi.find("span")[0].id
+      nomorUrutan = nomorUrutan.replace(/^\D+/g, '')
+      textLinea = (animasi.find("#linea" + nomorUrutan)[0] ? animasi.find("#linea" + nomorUrutan)[0].value : textLinea)
+      textLaguText = (animasi.find(".textarea")[0] ? animasi.find(".textarea")[0].value : textLaguText)
+      if (animasi.find("#animasi")[0].value == 4) {
+         animasi.find("td")[2].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
+         animasi.find("td")[2].setAttribute('colspan', '2')
+         animasi.find("td")[3].style.display = "none";
+      } else if (animasi.find("#animasi")[0].value > 5) {
+         animasi.find("td")[2].setAttribute('colspan', '2')
+         animasi.find("td")[3].style.display = "none";
+         animasi.find("td")[2].innerHTML = "<div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + nomorUrutan + "\">" + textLaguText + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + nomorUrutan + "')\"></button></div>";
+      } else {
+         animasi.find("td")[2].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
+         animasi.find("td")[2].removeAttribute('colspan')
+         animasi.find("td")[3].removeAttribute('style')
+      }
+   });
+
+   $("#simpanTakeb").on('click', function () {
+      j = 0
+      var finalSaveFile = ""
+      obj = $('table tr');
+      $.each(obj, function (key, value) {
+         if (key > 0) {
+            animasi = value.getElementsByTagName("select")[0].value
+            strLine1 = value.getElementsByTagName("td")[2].getElementsByClassName("checkBaris")[0]
+
+            if (strLine1 && animasi > 5) {
+               // ApplyLineBreaks(strLine1.id)
+               strLine1 = lirikText(strLine1.value, animasi)
+               finalSaveFile += strLine1
+            } else {
+               strLine1 = strLine1.value
+               strLine2 = value.getElementsByTagName("input")[2].value
+               finalSaveFile += strLine1 + "|" + (animasi != 4 ? strLine2 : "") + "|" + animasi + "\n"
+            }
+
+         }
+         j++
+      });
+
+      saveStaticDataToFile("\n" + finalSaveFile)
+   });
+
+   function saveStaticDataToFile(dataText) {
+      var blob = new Blob([dataText],
+         { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "static.txt");
+   }
+
+   var i = 2;
+   $("#container").on('click', '.addmore', function () {
+      count = (flagCount) ? $('table tr').length : 1;
+      var data = "<tr><td><input type='checkbox' class='case'/></td><td hidden><span id='snum" + i + "'>" + count + ".</span></td>";
+      data += "<td><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]'/></td> <td><input type='text' id='lineb" + i + "' name='lineb[]'/></td><td><select id='animasi' name='animasi'><option value='2'>Lagu</option><option value='3'>Bacaan</option><option value='4'>Acara</option><option value='5'>Full</option><option value='6'>Lirik</option><option value='7'>Text</option></select></td>";
+      data += "<td><div class=\"up\"><img src=\"up.png\" width=\"20\"></div> <div class=\"down\"><img src=\"down.png\" width=\"20\"></a></td>"
+      data += "<td class=\"enable-drag\"><img src=\"add.png\" class=\"addmore\" width=\"24\" style=\"margin-right: 5px\"><img src=\"drag.png\" width=\"24\"/></td>"
+      data += "</tr>"
+
+      if ($(this).parent()[0].className == "enable-drag") {
+         $(this).parents("tr").after(data)
+         check();
+      } else {
+         (objectTemplate) ? objectTemplate.remove() : "";
+         console.log($(this).parent()[0].className)
+         flagCount = true
+         $('table').append(data)
+      }
+      i++;
+   });
+
+   function select_all() {
+      $('input[class=case]:checkbox').each(function () {
+         if ($('input[class=check_all]:checkbox:checked').length == 0) {
+            $(this).prop("checked", false);
+         } else {
+            $(this).prop("checked", true);
+         }
+      });
+   }
+
+   function check() {
+      obj = $('table tr').find('span');
+      $.each(obj, function (key, value) {
+         id = value.id;
+         $('#' + id).html(key + 1);
+      });
+   }
+
+   document.querySelector("#read-button").addEventListener('click', function () {
+      if (document.querySelector("#file-input").files.length == 0) {
+         alert('Silahkan Pilih File Terlebih Dahulu!');
+         return;
+      }
+      var file = document.querySelector("#file-input").files[0];
+      readerFile(file);
+   });
+
+   function readerFile(file) {
+      (objectTemplate) ? objectTemplate.remove() : "";
+
+      var reader = new FileReader();
+
+      reader.addEventListener('loadstart', function () {
+         console.log('File reading started');
+      });
+
+      reader.addEventListener('error', function () {
+         alert('Error : Failed to read file');
+      });
+
+      reader.addEventListener('progress', function (e) {
+         if (e.lengthComputable == true) {
+            var percent_read = Math.floor((e.loaded / e.total) * 100);
+            console.log(percent_read + '% read');
+         }
+      });
+
+      reader.readAsText(file);
+
+      reader.addEventListener('load', function (e) {
+
+         var text = e.target.result;
+         var textBaru = text.split("\n");
+         var loopingText = 0;
+         var loopArray = 0;
+         var loopReal = 0;
+         var returnVar = "";
+         var returnVarHtml = "";
+         var afterSongorText = false;
+         var i = 2
+         var checkLagu = false;
+         var textLagu = ""
+         var saveAnimasi = ""
+
+         // textBaru.forEach(element => {
+         for (let index = 0; index < textBaru.length; index++) {
+            const elementORI = textBaru[index];
+
+            var element = unescape(elementORI);
+            if (element === "") {
+               continue
+            }
+            element = element.split('|')
+            linea = element[0]
+            lineb = element[1]
+            animasi = element[2]
+            //console.log("return  : " + returnVar);
+
+
+
+            if (lineb == 6 || lineb == 7) {
+               // textLagu += linea + "<br>"
+               textLagu += linea + "\n"
+               checkLagu = true
+               saveAnimasi = lineb
+               continue
+            }
+
+
+            count = $('table tr').length
+            console.log(count)
+            var data = "<tr><td><input type='checkbox' class='case'/></td><td hidden><span id='snum" + i + "'>" + count + ".</span></td>";
+
+            if (checkLagu) {
+               data += "<td colspan=\"2\"><div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + i + "\">" + textLagu + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + i + "')\"></button></div></td>"
+               textLagu = ""
+               index = index - 1
+            } else {
+               data += "<td " + (animasi == 4 ? "colspan=\"2\"" : "") + "><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]' value=\"" + linea + "\"/></td>"
+            }
+
+            data += "<td " + (animasi == 4 || checkLagu ? "style=\"display: none\"" : "") + "><input type='text' id='lineb" + i + "' name='lineb[]' value=\"" + lineb + "\"/></td>"
+            // if (checkLagu) {
+            //    data += "<td><select id='animasi' name='animasi'><option value='6' " + (saveAnimasi == 6 ? "selected" : "") + ">Lirik</option><option value='7' " + (saveAnimasi == 7 ? "selected" : "") + ">Text</option></select></td>";
+            //    saveAnimasi = ""
+            // } else {
+            data += "<td><select id='animasi' name='animasi'><option value='2' " + (animasi == 2 ? "selected" : "") + ">Lagu</option><option value='3' " + (animasi == 3 ? "selected" : "") + ">Bacaan</option><option value='4' " + (animasi == 4 ? "selected" : "") + ">Acara</option><option value='5' " + (animasi == 5 ? "selected" : "") + ">Full</option><option value='6' " + (saveAnimasi == 6 ? "selected" : "") + ">Lirik</option><option value='7' " + (saveAnimasi == 7 ? "selected" : "") + ">Text</option></select></td>";
+            saveAnimasi = ""
+            // }
+
+      
+            data += "<td><div class=\"up\"><img src=\"up.png\" width=\"20\"></div> <div class=\"down\"><img src=\"down.png\" width=\"20\"></a></td>"
+            data += "<td class=\"enable-drag\"><img src=\"add.png\" class=\"addmore\" width=\"24\" style=\"margin-right: 5px\"><img src=\"drag.png\" width=\"24\"/></td>"
+            data += "</tr>"
+
+
+            if ($('.case:checkbox:checked').length == 0) {
+               $('table').append(data);
+            } else {
+               $('.case:checkbox:checked').parents("tr").after(data);
+               $('.check_all').prop("checked", false);
+               $('.case:checkbox:checked').prop("checked", false);
+               check();
+            }
+
+            checkLagu = false //clear check untuk lagu
+            flagCount = true //Fix Count
+            i++;
+
+         };
+
+
+
+         // }
+
+         // lineAcara = returnLine
+
+      });
+
+
+   }
+
+</script>
