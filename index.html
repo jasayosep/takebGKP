@@ -4,6 +4,10 @@
    <script src="jquery-ui.js"></script>
    <script src="file.js"></script>
    <link rel="stylesheet" href="style.css">
+   <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css"> -->
+   <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+
+
 
 </head>
 <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -13,6 +17,8 @@
 
 <div id='container'>
    <h1>Aplikasi Tata Kebaktian</h1>
+   <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+
    <div style="display: inline;">
       <input style="font-size: 1em;width: 30%;" type="file" id="file-input">
       <button style="font-size: 1em" id="read-button">Baca Data</button>
@@ -32,9 +38,9 @@
          <tr>
             <th style="width: 0%;"><input class='check_all' type='checkbox' onclick="select_all()" /></th>
             <!-- <th style="width: 0%;">Urutan</th> -->
+            <th style="width: 0%;">Animasi</th>
             <th style="width: 50%;">Line 1</th>
             <th style="width: 50%;">Line 2</th>
-            <th style="width: 0%;">Animasi</th>
             <th style="width: 0%;">Posisi</th>
             <th style="width: 0%;"></th>
          </tr>
@@ -52,6 +58,24 @@
    </form>
 </div>
 <script>
+   $('#container').on('paste', 'textarea', function () {
+      var $el = $(this);
+      setTimeout(function () {
+         $el.val(function (i, val) {
+            //Hapus intent tab
+            str = val.replace((/  |\t+|\r\n|\r/gm), "");
+            //Hapus new line empty
+            str = str.replace(/^\s+|\s+$/g, '');
+            return str
+
+         })
+      })
+   });
+
+
+   $(function () {
+      $("#datepicker").datepicker();
+   });
    $(document).ready(function () {
       flagCount = false
 
@@ -91,7 +115,7 @@
       if (listDelete.length > 0) {
          var displayDelete = ""
          for (let index = listDelete.length - 1; index >= 0; index--) {
-            displayDelete += "\n" + listDelete[index].children[2].children[0].value
+            displayDelete += "\n" + listDelete[index].children[3].children[0].value
          }
          displayDelete = displayDelete.replace(/\n*$/, "")
          var r = confirm("Hapus Tata Kebaktian :" + displayDelete);
@@ -99,6 +123,17 @@
             $('.case:checkbox:checked').parents("tr").remove();
             $('.check_all').prop("checked", false);
             check();
+         }
+
+         if ($('table tr').length == 1) {
+            var data = '<tr id="template">'
+            data += '<td colspan="6">'
+            data += '<div style="text-align: center;">'
+            data += '<img src="add.png" width="25" class=\'addmore\'>'
+            data += '</div>'
+            data += '</td>'
+            data += '</tr>'
+            $('table').append(data)
          }
       }
    }
@@ -113,17 +148,17 @@
       textLinea = (animasi.find("#linea" + nomorUrutan)[0] ? animasi.find("#linea" + nomorUrutan)[0].value : textLinea)
       textLaguText = (animasi.find(".textarea")[0] ? animasi.find(".textarea")[0].value : textLaguText)
       if (animasi.find("#animasi")[0].value == 4) {
-         animasi.find("td")[2].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
-         animasi.find("td")[2].setAttribute('colspan', '2')
-         animasi.find("td")[3].style.display = "none";
+         animasi.find("td")[3].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
+         animasi.find("td")[3].setAttribute('colspan', '2')
+         animasi.find("td")[4].style.display = "none";
       } else if (animasi.find("#animasi")[0].value > 5) {
-         animasi.find("td")[2].setAttribute('colspan', '2')
-         animasi.find("td")[3].style.display = "none";
-         animasi.find("td")[2].innerHTML = "<div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + nomorUrutan + "\">" + textLaguText + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + nomorUrutan + "')\"></button></div>";
+         animasi.find("td")[3].setAttribute('colspan', '2')
+         animasi.find("td")[4].style.display = "none";
+         animasi.find("td")[3].innerHTML = "<div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + nomorUrutan + "\">" + textLaguText + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + nomorUrutan + "')\"></button></div>";
       } else {
-         animasi.find("td")[2].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
-         animasi.find("td")[2].removeAttribute('colspan')
-         animasi.find("td")[3].removeAttribute('style')
+         animasi.find("td")[3].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
+         animasi.find("td")[3].removeAttribute('colspan')
+         animasi.find("td")[4].removeAttribute('style')
       }
    });
 
@@ -134,7 +169,7 @@
       $.each(obj, function (key, value) {
          if (key > 0) {
             animasi = value.getElementsByTagName("select")[0].value
-            strLine1 = value.getElementsByTagName("td")[2].getElementsByClassName("checkBaris")[0]
+            strLine1 = value.getElementsByTagName("td")[3].getElementsByClassName("checkBaris")[0]
 
             if (strLine1 && animasi > 5) {
                // ApplyLineBreaks(strLine1.id)
@@ -160,7 +195,7 @@
    }
 
    $("#container").on('click', '#hapusTakeb', function () {
-      var r = confirm("Hapus Tata Kebaktian : " + $(this).parents("tr")[0].children[2].children[0].value);
+      var r = confirm("Hapus Tata Kebaktian : " + $(this).parents("tr")[0].children[3].children[0].value);
       if (r == true) {
          $(this).parents("tr").remove()
          $('.check_all').prop("checked", false);
@@ -183,7 +218,8 @@
    $("#container").on('click', '.addmore', function () {
       count = (flagCount) ? $('table tr').length : 1;
       var data = "<tr><td><input type='checkbox' class='case'/></td><td hidden><span id='snum" + i + "'>" + count + ".</span></td>";
-      data += "<td><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]'/></td> <td><input type='text' id='lineb" + i + "' name='lineb[]'/></td><td><select id='animasi' name='animasi'><option value='2'>Lagu</option><option value='3'>Bacaan</option><option value='4'>Acara</option><option value='5'>Full</option><option value='6'>Lirik</option><option value='7'>Text</option></select></td>";
+      data += "<td><select id='animasi' name='animasi'><option value='2'>Lagu</option><option value='3'>Bacaan</option><option value='4'>Acara</option><option value='5'>Full</option><option value='6'>Lirik</option><option value='7'>Text</option></select></td>"
+      data += "<td><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]'/></td> <td><input type='text' id='lineb" + i + "' name='lineb[]'/></td>";
       data += "<td><div class=\"up\"><img src=\"up.png\" width=\"20\"></div> <div class=\"down\"><img src=\"down.png\" width=\"20\"></a></td>"
       data += "<td class=\"enable-drag\"><img src=\"add.png\" class=\"addmore\" width=\"24\" style=\"margin-right: 5px\"><img src=\"delete.png\" id=\"hapusTakeb\" width=\"24\" style=\"margin-right: 5px\"><img src=\"drag.png\" width=\"24\"/></td>"
       data += "</tr>"
@@ -281,24 +317,29 @@
             //console.log("return  : " + returnVar);
 
 
-
+            console.log("ITERASI : " + index)
             if (lineb == 6 || lineb == 7) {
                // textLagu += linea + "<br>"
                textLagu += linea + "\n"
                checkLagu = true
                saveAnimasi = lineb
-               continue
+               if (index < textBaru.length - 2) {
+                  console.log(textBaru.length + "|" + index)
+                  continue
+               }
             }
 
 
             count = $('table tr').length
             console.log(count)
             var data = "<tr><td><input type='checkbox' class='case'/></td><td hidden><span id='snum" + i + "'>" + count + ".</span></td>";
+            data += "<td><select id='animasi' name='animasi'><option value='2' " + (animasi == 2 ? "selected" : "") + ">Lagu</option><option value='3' " + (animasi == 3 ? "selected" : "") + ">Bacaan</option><option value='4' " + (animasi == 4 ? "selected" : "") + ">Acara</option><option value='5' " + (animasi == 5 ? "selected" : "") + ">Full</option><option value='6' " + (saveAnimasi == 6 ? "selected" : "") + ">Lirik</option><option value='7' " + (saveAnimasi == 7 ? "selected" : "") + ">Text</option></select></td>";
 
             if (checkLagu) {
+               textLagu = textLagu.replace(/^\s+|\s+$/g, '');
                data += "<td colspan=\"2\"><div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + i + "\">" + textLagu + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + i + "')\"></button></div></td>"
                textLagu = ""
-               index = index - 1
+               index = (index < textBaru.length - 2 ? index - 1 : index)
             } else {
                data += "<td " + (animasi == 4 ? "colspan=\"2\"" : "") + "><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]' value=\"" + linea + "\"/></td>"
             }
@@ -308,7 +349,6 @@
             //    data += "<td><select id='animasi' name='animasi'><option value='6' " + (saveAnimasi == 6 ? "selected" : "") + ">Lirik</option><option value='7' " + (saveAnimasi == 7 ? "selected" : "") + ">Text</option></select></td>";
             //    saveAnimasi = ""
             // } else {
-            data += "<td><select id='animasi' name='animasi'><option value='2' " + (animasi == 2 ? "selected" : "") + ">Lagu</option><option value='3' " + (animasi == 3 ? "selected" : "") + ">Bacaan</option><option value='4' " + (animasi == 4 ? "selected" : "") + ">Acara</option><option value='5' " + (animasi == 5 ? "selected" : "") + ">Full</option><option value='6' " + (saveAnimasi == 6 ? "selected" : "") + ">Lirik</option><option value='7' " + (saveAnimasi == 7 ? "selected" : "") + ">Text</option></select></td>";
             saveAnimasi = ""
             // }
 
