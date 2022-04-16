@@ -146,8 +146,9 @@ function lirikText(textData, idText) {
     data = textData.replaceAll("<br>", "<div>").replaceAll("<div>", "|" + idText + "\n").replaceAll("</div>", "")
     data = data.replace(/\n*$/, "")
     data.split("\n").forEach(function (item) {
-
-        temp += "|" + idText + "\n"
+        if (item.split("|")[0] != "") {
+            temp += item + "|" + idText + "\n"
+        }
 
     })
 
