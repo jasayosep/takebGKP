@@ -147,10 +147,9 @@ function lirikText(textData, idText) {
     data = data.replace(/\n*$/, "")
     data.split("\n").forEach(function (item) {
         if (item.split("|")[0] != "") {
-            temp += item + "|" + idText + "\n"
-        } else {
-            temp += "|" + idText + "\n"
+            temp += item
         }
+        temp += "|" + idText + "\n"
 
     })
 
