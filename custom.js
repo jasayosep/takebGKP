@@ -146,17 +146,12 @@ function lirikText(textData, idText) {
     data = textData.replaceAll("<br>", "<div>").replaceAll("<div>", "|" + idText + "\n").replaceAll("</div>", "")
     data = data.replace(/\n*$/, "")
     data.split("\n").forEach(function (item) {
-        if (item.split("|")[0] != "") {
-            temp += item
-        }
-        if(temp2 != item){
-            temp2 = item
-            temp += "|" + idText+"\n"
-        }
+
+        temp += "|" + idText + "\n"
 
     })
-    
-    
+
+
     // Atasi newline
     // var replace = "\|"+idText+"\\n*$";
     // var re = new RegExp(replace,"");
@@ -171,7 +166,7 @@ function lirikText(textData, idText) {
 }
 
 
-function removeHTML(str){ 
+function removeHTML(str) {
     var tmp = document.createElement("DIV");
     tmp.innerHTML = str;
     return tmp.textContent || tmp.innerText || "";
