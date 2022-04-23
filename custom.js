@@ -132,7 +132,7 @@ function getInputSelection(el) {
 
 function replaceSelectedText(el, text) {
     var sel = getInputSelection(el), val = el.value;
-    el.value = val.slice(0, sel.start) + "<font color=\"#ffff00\"><b>" + val.slice(sel.start, sel.end) + "</b></font>" + val.slice(sel.end);
+    el.value = val.slice(0, sel.start) + "<font color=\"#ffffff\"><b>" + val.slice(sel.start, sel.end) + "</b></font>" + val.slice(sel.end);
 }
 
 function gantiText(idText) {

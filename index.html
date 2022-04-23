@@ -58,6 +58,7 @@
    </form>
 </div>
 <script>
+
    $('#container').on('paste', 'textarea', function () {
       var $el = $(this);
       setTimeout(function () {
@@ -154,7 +155,7 @@
       } else if (animasi.find("#animasi")[0].value > 5) {
          animasi.find("td")[3].setAttribute('colspan', '2')
          animasi.find("td")[4].style.display = "none";
-         animasi.find("td")[3].innerHTML = "<div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + nomorUrutan + "\">" + textLaguText + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + nomorUrutan + "')\"></button></div>";
+         animasi.find("td")[3].innerHTML = "<div class=\"kontenSpan\"><textarea cols=\"25\" contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + nomorUrutan + "\">" + textLaguText + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + nomorUrutan + "')\"></button></div>";
       } else {
          animasi.find("td")[3].innerHTML = "<input type='text' class='checkBaris' id='linea" + nomorUrutan + "' name='linea[]' value='" + textLinea + "'/>"
          animasi.find("td")[3].removeAttribute('colspan')
@@ -316,14 +317,12 @@
             animasi = element[2]
             //console.log("return  : " + returnVar);
 
-
-            console.log("ITERASI : " + index)
             if (lineb == 6 || lineb == 7) {
                // textLagu += linea + "<br>"
                textLagu += linea + "\n"
                checkLagu = true
                saveAnimasi = lineb
-               if (index < textBaru.length - 2) {
+               if (index < textBaru.length) {
                   console.log(textBaru.length + "|" + index)
                   continue
                }
@@ -331,15 +330,14 @@
 
 
             count = $('table tr').length
-            console.log(count)
             var data = "<tr><td><input type='checkbox' class='case'/></td><td hidden><span id='snum" + i + "'>" + count + ".</span></td>";
             data += "<td><select id='animasi' name='animasi'><option value='2' " + (animasi == 2 ? "selected" : "") + ">Lagu</option><option value='3' " + (animasi == 3 ? "selected" : "") + ">Bacaan</option><option value='4' " + (animasi == 4 ? "selected" : "") + ">Acara</option><option value='5' " + (animasi == 5 ? "selected" : "") + ">Full</option><option value='6' " + (saveAnimasi == 6 ? "selected" : "") + ">Lirik</option><option value='7' " + (saveAnimasi == 7 ? "selected" : "") + ">Text</option></select></td>";
 
             if (checkLagu) {
                textLagu = textLagu.replace(/^\s+|\s+$/g, '');
-               data += "<td colspan=\"2\"><div class=\"kontenSpan\"><textarea contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + i + "\">" + textLagu + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + i + "')\"></button></div></td>"
+               data += "<td colspan=\"2\"><div class=\"kontenSpan\"><textarea cols=\"25\" contenteditable=\"true\" name=\"linea[]\" class=\"textArea checkBaris\" id=\"boxLagu" + i + "\">" + textLagu + "</textarea><button style=\"height: 20px;\" onclick=\"gantiText('boxLagu" + i + "')\"></button></div></td>"
                textLagu = ""
-               index = (index < textBaru.length - 2 ? index - 1 : index)
+               index = (index < textBaru.length ? index - 1 : index)
             } else {
                data += "<td " + (animasi == 4 ? "colspan=\"2\"" : "") + "><input type='text' class='checkBaris' id='linea" + i + "' name='linea[]' value=\"" + linea + "\"/></td>"
             }
